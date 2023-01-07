@@ -5,3 +5,9 @@ from django.http import HttpResponse
 
 def say_hello(request):
     return render(request, 'hello.html', {'name': 'Reza'})
+
+
+def tem_func(request):
+    x = 1
+    y = 2
+    return render(request, 'temp2.html')

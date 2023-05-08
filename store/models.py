@@ -1,20 +1,33 @@
 from django.db import models
 
+# many-to-many realtionship between promotion and product
+
+
+class Promotion(models.Model):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField()
+
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
+    feature_product = models.ForeignKey(
+        'Product', on_delete=models.SET_NULL, null=True)
 
 
 class Product(models.Model):
     # To create your primery key
     # sku = models.CharField(max_length=10, primary_key=True)
     title = models.CharField(max_length=255)
+    slug = models.SlugField(default='-')
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=0)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=0)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
 
     colletions = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    # If you want Django use a specific name (here is products) in promotion class, use option related_name
+    # promotions = models.ManyToManyField(Promotion,related_name='products')
+    promotions = models.ManyToManyField(Promotion)
 
 
 class Customer(models.Model):
@@ -39,6 +52,7 @@ class Customer(models.Model):
 class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+    zip = models.CharField(max_length=255, default='-')
     # for one to one relationship
     # customer = models.OneToOneField(
     #   Customer, on_delete=models.CASCADE, primary_key=True)
@@ -64,18 +78,20 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 
-class Order_item(models.Model):
+class OrderItem(models.Model):
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=10, decimal_places=0)
-    orders = models.ForeignKey(Order, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
+
+# Shopping cart
 
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class cartitem(models.Model):
+class cartItem(models.Model):
     quantity = models.PositiveSmallIntegerField()
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

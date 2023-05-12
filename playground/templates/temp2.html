@@ -5,6 +5,15 @@
            <font> Hi I am in the temp URL</font>
         </head>
         <ul>
+            {{res2}}--{{res3}}=={{res4}}
+            
+            {{res5}}
+            {%for ord in qs0%}
+            <li>
+                quantity of prod 1 soled is: {{ord.quantity}} -AND- {{ord.product.title}} -- ANDD-- {{ord.order.payment_status}}
+            </li>
+            {% endfor %}
+
             {%for ord1 in ord_info%}
             <li>
                 The last 5 orders are: {{ord1.id}} -AND- {{ord1.customer.first_name}}

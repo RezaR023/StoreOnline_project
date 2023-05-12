@@ -4,5 +4,35 @@
             <title>My project</title>    
            <font> Hi I am in the temp URL</font>
         </head>
+        <ul>
+            {%for ord1 in ord_info%}
+            <li>
+                The last 5 orders are: {{ord1.id}} -AND- {{ord1.customer.first_name}}
+            </li>
+            {% endfor %}
+            {%for ord in orderitem_info%}
+            <li>
+                Order item of Coll id 3 is: {{ord.id}}
+            </li>
+        {% endfor %}
+            {%for ord in order_info%}
+                <li>
+                    orders of customer id 1 is: {{ord.placed_at}}
+                </li>
+            {% endfor %}
+            {% for coll in collection_info %}
+                <li>
+                    collection title is: {{coll.title}}
+                </li>
+            {% endfor %}
+            {% for cust in customer_info %}
+                <li>
+                    first name is: {{ cust.first_name}}, The last name is: {{cust.last_name}}
+                </li>
+                <li>
+                    Email: {{cust.email}}
+                </li>
+            {% endfor %}
+        </ul>
     </body>
 </html>

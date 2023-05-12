@@ -1,9 +1,30 @@
 <html>
     <body>
+        <head>
+            <title>The first project</title>    
+        </head>
         {%if name%}
         <h1> <font color="red"> Hello {{name}} </font> </h1>
         {% else %}
         <font color='blue'> TEST world </font>
         {% endif %}
+        <ul>
+            {%for prod2 in products3%}
+            <li>
+                Sorted products which oredred: {{prod2.title}}
+            </li>
+            {% endfor %}   
+            {%for prod1 in products2%}
+                <li>
+                    product with less inv:  {{prod1.title}} AND 'the prod inv is: {{prod1.inventory}}
+                </li>
+            {% endfor %}
+        </ul>
+        <ul>
+            {% for product in products %}
+            <li>{{product.title}}</li>
+            <li>{{product.description}}</li>
+            {%  endfor  %}
+        </ul>
     </body>
 </html>

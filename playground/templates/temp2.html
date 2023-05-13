@@ -6,11 +6,11 @@
         </head>
         <ul>
             {{res2}}--{{res3}}=={{res4}}
-            
+
             {{res5}}
-            {%for ord in qs0%}
+            {%for ord in qs80%}
             <li>
-                quantity of prod 1 soled is: {{ord.quantity}} -AND- {{ord.product.title}} -- ANDD-- {{ord.order.payment_status}}
+                ordered oreders: {{ord.placed_at}}
             </li>
             {% endfor %}
 

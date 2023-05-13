@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.db.models import Q, F
+from django.db.models import Q, F, ExpressionWrapper, DecimalField, Value, DateTimeField, DateField
 from django.db.models.aggregates import Avg, Count, Max, Min, Sum, StdDev, Variance
 from store.models import Product, Customer, Collection, Order, OrderItem
 # Create your views here.
@@ -41,7 +41,22 @@ def tem_func(request):
     queryset5 = Order.objects.select_related(
         'customer').prefetch_related('orderitem_set__product').all().order_by('-placed_at')[:5]
 
+    queryset6 = Customer.objects.annotate(orders_count=Count('order'))
+    queryset7 = Product.objects.annotate(
+        discouned_price=ExpressionWrapper(F('unit_price')*0.8, output_field=DecimalField()))
+    queryset8 = Customer.objects.annotate(last_order_id=Max('order__id'))
+    queryset9 = Collection.objects.annotate(
+        NUmber_of_products=Count('product__id'))
+    queryset10 = Customer.objects.annotate(
+        cus_with_more5_orders=Count('order__id')).filter(cus_with_more5_orders__gt=5)
+    queryset11 = Customer.objects.annotate(
+        money_spend=Sum(F('order__orderitem__unit_price')*F('order__orderitem__quantity')))
+    queryset12 = Product.objects.annotate(
+        soled_prod=Sum(F('orderitem__unit_price')*F('orderitem__quantity'))).order_by('-soled_prod')[:5]
+
     dic2 = {'collection_info': list(queryset1), 'customer_info': list(queryset2), 'order_info': list(
         queryset3), 'orderitem_info': list(queryset4), 'ord_info': list(queryset5),
+        'qs6': list(queryset6), 'qs7': list(queryset7), 'qs80': list(queryset8), 'qs12': list(queryset12),
         'qs0': list(queryset0), 'res2': res2, 'res3': res3, 'res4': res4, 'res5': res5}
+    dic2t = {'qs80': list(queryset8)}
     return render(request, 'temp2.html', dic2)

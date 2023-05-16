@@ -6,6 +6,17 @@ from store.models import Product, Customer, Collection, Order, OrderItem
 # Create your views here.
 
 
+def say_hello2(request):
+    # To set update add pk=11 in the arument
+    collection = Collection(pk=11)
+    collection.title = 'Games'
+    collection.featured_product = Product(pk=2)
+    collection.save()
+    collection.id
+
+    return render(request, 'sh.html')
+
+
 def say_hello(request):
     result = Product.objects.aggregate(
         count=Count('id'), min_price=Max('unit_price')-Min('unit_price'))
@@ -17,8 +28,7 @@ def say_hello(request):
         id=F('orderitem__product_id')).distinct().order_by('title')
     queryset33 = Product.objects.filter(id__in=OrderItem.objects.values(
         'product_id').distinct()).order_by('title')
-    # for prod in query_set:
-    #   print(prod)
+
     diction = {'name': 'Reza', 'products': list(queryset1), 'products2': list(
         queryset2), 'products3': list(queryset3), 'res1': result}
     return render(request, 'hello.html', diction)

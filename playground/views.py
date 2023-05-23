@@ -2,8 +2,21 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Q, F, ExpressionWrapper, DecimalField, Value, DateTimeField, DateField
 from django.db.models.aggregates import Avg, Count, Max, Min, Sum, StdDev, Variance
-from store.models import Product, Customer, Collection, Order, OrderItem
+from store.models import Product, Customer, Collection, Order, OrderItem, Cart, CartItem
 # Create your views here.
+
+
+def shopCart(request):
+    cart = Cart()
+    cart.save()
+
+    item1 = CartItem()
+    item1.cart = cart
+    item1.product_id = 1
+    item1.quantity = 1
+    item1.save()
+
+    return render(request, 'shcart.html')
 
 
 def say_hello2(request):

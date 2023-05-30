@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List, Optional, Tuple
 from django.contrib import admin
 from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
@@ -11,10 +11,28 @@ from django.db.models.aggregates import Avg, Count, Max, Min, Sum, StdDev, Varia
 # Register your models here.
 
 
+class InventoryFilter(admin.SimpleListFilter):
+    title = 'inventory'
+    parameter_name = 'ínventory'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('<10', 'Low'),
+            ('>90', 'High')
+        ]
+
+    def queryset(self, request, queryset: QuerySet):
+        if self.value() == '<10':
+            return queryset.filter(inventory__lt=10)
+        if self.value() == '>90':
+            return queryset.filter(inventory__gt=90)
+
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['title', 'unit_price',
                     'inventory_status', 'COLLECTION_TITLE']
+    list_filter = ['collection', 'last_update', InventoryFilter]
     list_editable = ['unit_price']
     list_per_page = 20
     # list_select_related = ['collection']
@@ -57,6 +75,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_editable = ['membership']
     ordering = ['first_name', 'last_name']
     list_per_page = 20
+
     # list_select_related = ['order']
 
     @admin.display(ordering='orders_count')

@@ -30,12 +30,15 @@ class InventoryFilter(admin.SimpleListFilter):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("title",)}
     actions = ['clear_inventory']
+    autocomplete_fields = ['collection']
     list_display = ['title', 'unit_price',
                     'inventory_status', 'COLLECTION_TITLE']
     list_filter = ['collection', 'last_update', InventoryFilter]
     list_editable = ['unit_price']
     list_per_page = 20
+
     # list_select_related = ['collection']
 
     def COLLECTION_TITLE(self, product):
@@ -61,6 +64,7 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(models.Collection)
 class CollectionAdmin(admin.ModelAdmin):
     list_display = ['title', 'products_count']
+    search_fields = ['title']
 
     @admin.display(ordering='products_count')
     def products_count(self, collection):
@@ -84,6 +88,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_editable = ['membership']
     ordering = ['first_name', 'last_name']
     list_per_page = 20
+    search_fields = ['first_name', 'last_name']
 
     # list_select_related = ['order']
 
@@ -105,6 +110,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['customer']
     list_display = ['id', 'placed_at', 'payment_status', 'customer']
     list_editable = ['payment_status']
     list_per_page = 10

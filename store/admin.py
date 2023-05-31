@@ -1,11 +1,13 @@
 from typing import Any, List, Optional, Tuple
 from django.contrib import admin, messages
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
 from django.utils.html import format_html, urlencode
 # from django.utils.http import urlencode
 from django.urls import reverse
 from . import models
+from tags.models import TaggedItem
 from django.db.models.aggregates import Avg, Count, Max, Min, Sum, StdDev, Variance
 
 # Register your models here.
@@ -28,16 +30,23 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__gt=90)
 
 
+class TagInline(GenericTabularInline):
+    autocomplete_fields = ['tag']
+    model = TaggedItem
+
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     actions = ['clear_inventory']
     autocomplete_fields = ['collection']
+    inlines = [TagInline]
     list_display = ['title', 'unit_price',
                     'inventory_status', 'COLLECTION_TITLE']
     list_filter = ['collection', 'last_update', InventoryFilter]
     list_editable = ['unit_price']
     list_per_page = 20
+    search_fields = ['title']
 
     # list_select_related = ['collection']
 
@@ -108,9 +117,17 @@ class CustomerAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(orders_count=Count('order__id'))
 
 
+class OrderItemInline(admin.TabularInline):
+    autocomplete_fields = ['product']
+    model = models.OrderItem
+    # min_num = 1
+    # max_num = 11
+
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
+    inlines = [OrderItemInline]
     list_display = ['id', 'placed_at', 'payment_status', 'customer']
     list_editable = ['payment_status']
     list_per_page = 10

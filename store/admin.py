@@ -1,13 +1,13 @@
 from typing import Any, List, Optional, Tuple
 from django.contrib import admin, messages
-from django.contrib.contenttypes.admin import GenericTabularInline
+# from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
 from django.utils.html import format_html, urlencode
 # from django.utils.http import urlencode
 from django.urls import reverse
 from . import models
-from tags.models import TaggedItem
+# from tags.models import TaggedItem
 from django.db.models.aggregates import Avg, Count, Max, Min, Sum, StdDev, Variance
 
 # Register your models here.
@@ -30,9 +30,9 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__gt=90)
 
 
-class TagInline(GenericTabularInline):
-    autocomplete_fields = ['tag']
-    model = TaggedItem
+# class TagInline(GenericTabularInline):
+#     autocomplete_fields = ['tag']
+#     model = TaggedItem
 
 
 @admin.register(models.Product)
@@ -40,7 +40,7 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     actions = ['clear_inventory']
     autocomplete_fields = ['collection']
-    inlines = [TagInline]
+    # inlines = [TagInline]
     list_display = ['title', 'unit_price',
                     'inventory_status', 'COLLECTION_TITLE']
     list_filter = ['collection', 'last_update', InventoryFilter]

@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'storeonline.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'storefront',
+        'NAME': 'storeonline',
         'HOST': 'localhost',
         'USER': 'root',
         'PASSWORD': '1364Margemush'

@@ -12,7 +12,8 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'title', 'price', 'price_with_tax', 'collection']
+        fields = ['id', 'title', 'description', 'slug', 'inventory',
+                  'price', 'price_with_tax', 'collection']
     price = serializers.DecimalField(
         max_digits=6, decimal_places=2, source='unit_price')
     price_with_tax = serializers.SerializerMethodField(
@@ -22,15 +23,16 @@ class ProductSerializer(serializers.ModelSerializer):
     # )
     # collection = serializers.StringRelatedField()
     # collection = CollectionSerializer()
-    collection = serializers.HyperlinkedRelatedField(
-        queryset=Collection.objects.all(),
-        view_name='collection-detail'
-    )
+    # collection = serializers.HyperlinkedRelatedField(
+    #     queryset=Collection.objects.all(),
+    #     view_name='collection-detail'
+    # )
 
     def calculate_tax(self, product: Product):
         return product.unit_price * Decimal(1.1)
 
-    def validate(self, data):
-        if data['password'] != data['confirm_password']:
-            return serializers.ValidationError('Password do not match')
-        return data
+    # defining a function for validating the compare fields
+    # def validate(self, data):
+    #     if data['password'] != data['confirm_password']:
+    #         return serializers.ValidationError('Password do not match')
+    #     return data

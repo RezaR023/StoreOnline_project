@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Product, Collection
 from .serializer import ProductSerializer, CollectionSerializer
+from django.db.models.aggregates import Count
 # Create your views here.
 
 
@@ -41,8 +42,34 @@ def product_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view()
+@api_view(['GET', 'POST'])
+def collection_list(request):
+    if request.method == 'GET':
+        queryset = Collection.objects.annotate(
+            products_count=Count('product')).all()
+        serializer = CollectionSerializer(queryset, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = CollectionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
 def collection_detail(request, pk):
-    collection = get_object_or_404(Collection, pk=pk)
-    serializer = CollectionSerializer(collection)
-    return Response(serializer.data)
+    collection = get_object_or_404(Collection.objects.annotate(
+        products_count=Count('product')), pk=pk)
+    if request.method == 'GET':
+        serializer = CollectionSerializer(collection)
+        return Response(serializer.data)
+    if request.method == 'PUT':
+        serializer = ProductSerializer(collection, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    if request.method == 'DELETE':
+        if collection.product_set.count() > 0:
+            return Response({'error': 'Collection cannot be deleted since the collection contains one or more products.'})
+        collection.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

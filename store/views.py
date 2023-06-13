@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Product, Collection, OrderItem
-from .serializer import ProductSerializer, CollectionSerializer
+from .models import Product, Collection, OrderItem, Review
+from .serializer import ProductSerializer, CollectionSerializer, ReviewSerializer
 from django.db.models.aggregates import Count
 # Create your views here.
 
@@ -186,3 +186,8 @@ def collection_detail(request, pk):
             return Response({'error': 'Collection cannot be deleted since the collection contains one or more products.'})
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer

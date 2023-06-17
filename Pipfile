@@ -10,6 +10,7 @@ jupyterlab = "*"
 mysqlclient = "*"
 djangorestframework = "*"
 pylint-django = "*"
+drf-nested-routers = "*"
 
 [dev-packages]
 autopep8 = "*"
